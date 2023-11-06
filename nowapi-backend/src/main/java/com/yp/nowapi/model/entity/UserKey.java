@@ -1,7 +1,6 @@
 package com.yp.nowapi.model.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -9,11 +8,15 @@ import java.util.Date;
 
 /**
  * 用户密钥
+ *
  * @TableName user_key
  */
-@TableName(value ="user_key")
+@TableName(value = "user_key")
 @Data
 public class UserKey implements Serializable {
+
+    @TableId(type = IdType.ASSIGN_ID)
+    private Long id;
     /**
      * 用户id
      */
@@ -42,6 +45,7 @@ public class UserKey implements Serializable {
     /**
      * 是否删除
      */
+    @TableLogic
     private Integer isDelete;
 
     @TableField(exist = false)

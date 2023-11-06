@@ -8,6 +8,8 @@ import java.util.Date;
 
 @Data
 public class UserKeyVO implements Serializable {
+
+    private Long id;
     /**
      * 用户id
      */
