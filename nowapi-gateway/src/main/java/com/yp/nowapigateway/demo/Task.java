@@ -3,11 +3,10 @@ package com.yp.nowapigateway.demo;
 import com.yp.nowapicommon.service.DemoService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-@Component
+//@Component
 public class Task implements CommandLineRunner {
     @DubboReference
     private DemoService demoService;

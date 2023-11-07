@@ -4,7 +4,6 @@ package com.yp.nowapi.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.google.gson.Gson;
 import com.yp.nowapi.annotation.AuthCheck;
 import com.yp.nowapi.common.*;
 import com.yp.nowapi.constant.CommonConstant;
@@ -271,10 +270,10 @@ public class InterfaceInfoController {
         String accessKey = userKey.getAccessKey();
         String secretKey = userKey.getSecretKey();
 
-        Gson gson = new Gson();
-        com.yp.nowapicommon.entity.User user = gson.fromJson(userRequestParams, com.yp.nowapicommon.entity.User.class);
+//        Gson gson = new Gson();
+//        com.yp.nowapicommon.entity.User user = gson.fromJson(userRequestParams, com.yp.nowapicommon.entity.User.class);
         NowApiClient tmpClient = new NowApiClient(accessKey, secretKey);
-        String usernameByPost = tmpClient.getUsernameByPost(user);
+        String usernameByPost = tmpClient.getUsernameByPost(new com.yp.nowapicommon.entity.User("laterya"));
 
         return ResultUtils.success(usernameByPost);
     }
