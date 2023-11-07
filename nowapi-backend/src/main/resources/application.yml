@@ -19,17 +19,17 @@ spring:
     username: root
     password: 123456
   # Redis 配置
-#  redis:
-#    database: 1
-#    host: localhost
-#    port: 6379
-#    timeout: 5000
-#    password: 123456
+  #  redis:
+  #    database: 1
+  #    host: localhost
+  #    port: 6379
+  #    timeout: 5000
+  #    password: 123456
   # Elasticsearch 配置
-#  elasticsearch:
-#    uris: http://localhost:9200
-#    username: root
-#    password: 123456
+  #  elasticsearch:
+  #    uris: http://localhost:9200
+  #    username: root
+  #    password: 123456
   # 文件上传
   servlet:
     multipart:
@@ -85,3 +85,12 @@ nowapi:
   client:
     access-key: xxx
     secret-key: xxx
+dubbo:
+  application:
+    name: nowapi-backend-provider
+  protocol:
+    name: dubbo
+    port: -1 #随机分配可用端口
+  registry:
+    id: nacos-register
+    address: nacos://localhost:8848

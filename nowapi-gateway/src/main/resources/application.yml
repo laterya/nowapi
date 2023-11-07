@@ -1,0 +1,24 @@
+server:
+  port: 8103
+spring:
+  cloud:
+    gateway:
+      default-filters:
+        - AddRequestHeader=source, nowapi-gateway
+      routes:
+        - id: nowapi-route
+          uri: http://localhost:8102
+          predicates:
+            - Path=/api/**
+logging:
+  level:
+    org.springframework.cloud.gateway: trace
+dubbo:
+  application:
+    name: nowapi-gateway-consumer
+  protocol:
+    name: dubbo
+    port: -1 #????????
+  registry:
+    id: nacos-register
+    address: nacos://localhost:8848
