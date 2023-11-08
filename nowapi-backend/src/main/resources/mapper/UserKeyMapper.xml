@@ -8,6 +8,7 @@
         <result property="userId" column="userId" jdbcType="BIGINT"/>
         <result property="accessKey" column="accessKey" jdbcType="VARCHAR"/>
         <result property="secretKey" column="secretKey" jdbcType="VARCHAR"/>
+        <result property="leftNum" column="leftNum" jdbcType="BIGINT"/>
         <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
         <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
@@ -15,7 +16,7 @@
 
     <sql id="Base_Column_List">
         userId,accessKey,
-        secretKey,createTime,updateTime,
+        secretKey,leftNum,createTime,updateTime,
         isDelete
     </sql>
 </mapper>

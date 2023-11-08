@@ -33,6 +33,11 @@ public class UserKey implements Serializable {
     private String secretKey;
 
     /**
+     * 剩余积分
+     */
+    private Long leftNum;
+
+    /**
      * 创建时间
      */
     private Date createTime;

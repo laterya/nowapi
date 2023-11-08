@@ -18,20 +18,15 @@ import java.util.Date;
 @Data
 public class InterfaceInfo implements Serializable {
     /**
-     * 主键
+     * id
      */
     @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
-     * 名称
+     * 接口名称
      */
     private String name;
-
-    /**
-     * 描述
-     */
-    private String description;
 
     /**
      * 接口地址
@@ -39,9 +34,34 @@ public class InterfaceInfo implements Serializable {
     private String url;
 
     /**
-     * 请求参数
+     * 发布人
+     */
+    private Long userId;
+
+    /**
+     * 请求方法
+     */
+    private String method;
+
+    /**
+     * 接口请求参数
      */
     private String requestParams;
+
+    /**
+     * 接口响应参数
+     */
+    private String responseParams;
+
+    /**
+     * 扣除积分数
+     */
+    private Long reduceScore;
+
+    /**
+     * 请求示例
+     */
+    private String requestExample;
 
     /**
      * 请求头
@@ -54,19 +74,29 @@ public class InterfaceInfo implements Serializable {
     private String responseHeader;
 
     /**
-     * 接口状态（0-关闭，1-开启）
+     * 返回格式(JSON等等)
+     */
+    private String returnFormat;
+
+    /**
+     * 描述信息
+     */
+    private String description;
+
+    /**
+     * 接口状态（0- 默认下线 1- 上线）
      */
     private Integer status;
 
     /**
-     * 请求类型
+     * 接口总调用次数
      */
-    private String method;
+    private Long totalInvokes;
 
     /**
-     * 创建人
+     * 接口头像
      */
-    private Long userId;
+    private String avatarUrl;
 
     /**
      * 创建时间
@@ -79,7 +109,7 @@ public class InterfaceInfo implements Serializable {
     private Date updateTime;
 
     /**
-     * 是否删除(0-未删, 1-已删)
+     * 是否删除
      */
     private Integer isDelete;
 

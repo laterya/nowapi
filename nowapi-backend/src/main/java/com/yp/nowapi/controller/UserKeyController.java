@@ -14,10 +14,7 @@ import com.yp.nowapi.model.vo.UserKeyVO;
 import com.yp.nowapi.service.UserKeyService;
 import com.yp.nowapi.service.UserService;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +47,25 @@ public class UserKeyController {
             userKeyService.save(userKey);
         } catch (RuntimeException e) {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "用户密钥添加失败");
+        }
+        return ResultUtils.success(true);
+    }
+
+    @PutMapping
+    public BaseResponse<Boolean> reGenUserKey(HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
+        LambdaQueryWrapper<UserKey> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(UserKey::getUserId, loginUser.getId());
+        UserKey userKey = userKeyService.getOne(lqw);
+        Digester digester = new Digester(DigestAlgorithm.SHA256);
+        String accessKey = digester.digestHex(RandomUtil.randomString(6) + loginUser.getUserAccount());
+        String secretKey = digester.digestHex(RandomUtil.randomString(6) + loginUser.getUserPassword());
+        userKey.setAccessKey(accessKey);
+        userKey.setSecretKey(secretKey);
+        try {
+            userKeyService.updateById(userKey);
+        } catch (RuntimeException e) {
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "用户密钥更新失败");
         }
         return ResultUtils.success(true);
     }

@@ -1,6 +1,6 @@
 package com.yp.nowapigateway.filter;
 
-import com.yp.nowapicommon.service.InnerUserInterfaceInfoService;
+import com.yp.nowapicommon.service.InnerInterfaceInfoInvokeService;
 import com.yp.nowapicommon.service.InnerUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -38,7 +38,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     private InnerUserService innerUserService;
 
     @DubboReference
-    private InnerUserInterfaceInfoService innerUserInterfaceInfoService;
+    private InnerInterfaceInfoInvokeService innerInterfaceInfoInvokeService;
 
     private static final List<String> IP_WHITE_LIST = Collections.singletonList("127.0.0.1");
 
@@ -72,13 +72,16 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (userId == -1) {
             return handleNoAuth(response);
         }
-        // 4. 请求的模拟接口是否存在
+        // 4. 请求的模拟接口是否存在且上线
         long interfaceInfoId = innerUserService.verifyAndGetInterfaceInfoId(path, method);
         if (interfaceInfoId == -1) {
             response.setStatusCode(HttpStatus.NOT_FOUND);
             return response.setComplete();
         }
-        // todo 判断用户是否有该接口的调用次数
+        boolean isEnough = innerInterfaceInfoInvokeService.isEnoughInvokeCount(interfaceInfoId, userId);
+        if (!isEnough) {
+            return handleNoAuth(response);
+        }
         // 5. 请求转发，调用模拟接口
 //        Mono<Void> filter = chain.filter(exchange);
         // 6. 响应日志
@@ -112,7 +115,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
                                     fluxBody.map(dataBuffer -> {
                                         // 7. 调用成功，接口调用次数 + 1 invokeCount
                                         try {
-                                            innerUserInterfaceInfoService.invokeCount(interfaceInfoId, userId);
+                                            innerInterfaceInfoInvokeService.invokeCount(interfaceInfoId, userId);
                                         } catch (Exception e) {
                                             log.error("invokeCount error", e);
                                         }

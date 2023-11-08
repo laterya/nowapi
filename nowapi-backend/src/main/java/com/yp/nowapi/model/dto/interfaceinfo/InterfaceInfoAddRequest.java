@@ -6,20 +6,16 @@ import java.io.Serializable;
 
 /**
  * 接口创建请求
- *
  */
 @Data
 public class InterfaceInfoAddRequest implements Serializable {
 
-    /**
-     * 名称
-     */
-    private String name;
+    private static final long serialVersionUID = -6998757753053880260L;
 
     /**
-     * 描述
+     * 接口名称
      */
-    private String description;
+    private String name;
 
     /**
      * 接口地址
@@ -27,9 +23,29 @@ public class InterfaceInfoAddRequest implements Serializable {
     private String url;
 
     /**
-     * 请求参数
+     * 请求方法
+     */
+    private String method;
+
+    /**
+     * 接口请求参数
      */
     private String requestParams;
+
+    /**
+     * 接口响应参数
+     */
+    private String responseParams;
+
+    /**
+     * 扣除积分数
+     */
+    private Long reduceScore;
+
+    /**
+     * 请求示例
+     */
+    private String requestExample;
 
     /**
      * 请求头
@@ -42,8 +58,18 @@ public class InterfaceInfoAddRequest implements Serializable {
     private String responseHeader;
 
     /**
-     * 请求类型
+     * 返回格式(JSON等等)
      */
-    private String method;
+    private String returnFormat;
+
+    /**
+     * 描述信息
+     */
+    private String description;
+
+    /**
+     * 接口头像
+     */
+    private String avatarUrl;
 
 }

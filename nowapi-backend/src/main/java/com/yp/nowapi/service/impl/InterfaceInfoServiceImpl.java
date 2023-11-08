@@ -32,7 +32,7 @@ public class InterfaceInfoServiceImpl extends ServiceImpl<InterfaceInfoMapper, I
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         String name = interfaceInfo.getName();
-        // 创建时，所有参数必须非空
+        // 创建时，所有参数必须非空 todo InterfaceInfo是否有效的校验规则
         if (add) {
             if (StringUtils.isAnyBlank(name)) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR);

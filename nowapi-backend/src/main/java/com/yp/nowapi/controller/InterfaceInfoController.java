@@ -15,9 +15,7 @@ import com.yp.nowapi.model.entity.InterfaceInfo;
 import com.yp.nowapi.model.entity.User;
 import com.yp.nowapi.model.enums.InterfaceInfoStatusEnum;
 import com.yp.nowapi.service.InterfaceInfoService;
-import com.yp.nowapi.service.UserKeyService;
 import com.yp.nowapi.service.UserService;
-import com.yp.nowapiclient.client.NowApiClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -38,12 +36,6 @@ public class InterfaceInfoController {
 
     @Resource
     private UserService userService;
-
-    @Resource
-    private UserKeyService userKeyService;
-
-    @Resource
-    private NowApiClient nowApiClient;
 
     // region 增删改查
 
