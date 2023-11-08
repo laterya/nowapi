@@ -1,7 +1,6 @@
 package com.yp.nowapi.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yp.nowapi.annotation.AuthCheck;
@@ -14,7 +13,6 @@ import com.yp.nowapi.model.dto.interfaceinfo.InterfaceInfoQueryRequest;
 import com.yp.nowapi.model.dto.interfaceinfo.InterfaceInfoUpdateRequest;
 import com.yp.nowapi.model.entity.InterfaceInfo;
 import com.yp.nowapi.model.entity.User;
-import com.yp.nowapi.model.entity.UserKey;
 import com.yp.nowapi.model.enums.InterfaceInfoStatusEnum;
 import com.yp.nowapi.service.InterfaceInfoService;
 import com.yp.nowapi.service.UserKeyService;
@@ -210,21 +208,15 @@ public class InterfaceInfoController {
         }
         long id = idRequest.getId();
         // 判断是否存在
-        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
-        if (oldInterfaceInfo == null) {
+        InterfaceInfo interfaceInfo = interfaceInfoService.getById(id);
+        if (interfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
         // 判断接口是否可以调用
-        // todo 如何映射判断id对应的接口是否可以调用
-        String getUserName = nowApiClient.getUsernameByPost(new com.yp.nowapicommon.entity.User("laterya"));
-        if (StringUtils.isBlank(getUserName)) {
-            throw new BusinessException(ErrorCode.SYSTEM_ERROR, "接口不可用");
-        }
-        InterfaceInfo interfaceInfo = new InterfaceInfo();
-        interfaceInfo.setId(id);
+        interfaceInfoService.invokeTest(interfaceInfo);
+
         interfaceInfo.setStatus(InterfaceInfoStatusEnum.ONLINE.getValue());
-        boolean result = interfaceInfoService.updateById(interfaceInfo);
-        return ResultUtils.success(result);
+        return ResultUtils.success(interfaceInfoService.updateById(interfaceInfo));
     }
 
     @AuthCheck(mustRole = "admin")
@@ -256,25 +248,16 @@ public class InterfaceInfoController {
         long id = interfaceInfoInvokeRequest.getId();
         String userRequestParams = interfaceInfoInvokeRequest.getUserRequestParams();
         // 判断是否存在
-        InterfaceInfo oldInterfaceInfo = interfaceInfoService.getById(id);
-        if (oldInterfaceInfo == null) {
+        InterfaceInfo interfaceInfo = interfaceInfoService.getById(id);
+        if (interfaceInfo == null) {
             throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
         }
-        if (Objects.equals(oldInterfaceInfo.getStatus(), InterfaceInfoStatusEnum.OFFLINE.getValue())) {
+        if (Objects.equals(interfaceInfo.getStatus(), InterfaceInfoStatusEnum.OFFLINE.getValue())) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "接口已下线");
         }
-        User loginUser = userService.getLoginUser(request);
-        LambdaQueryWrapper<UserKey> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(UserKey::getUserId, loginUser.getId());
-        UserKey userKey = userKeyService.getOne(lqw);
-        String accessKey = userKey.getAccessKey();
-        String secretKey = userKey.getSecretKey();
 
-//        Gson gson = new Gson();
-//        com.yp.nowapicommon.entity.User user = gson.fromJson(userRequestParams, com.yp.nowapicommon.entity.User.class);
-        NowApiClient tmpClient = new NowApiClient(accessKey, secretKey);
-        String usernameByPost = tmpClient.getUsernameByPost(new com.yp.nowapicommon.entity.User("laterya"));
+        Object object = interfaceInfoService.invoke(interfaceInfo, userRequestParams);
 
-        return ResultUtils.success(usernameByPost);
+        return ResultUtils.success(object);
     }
 }
