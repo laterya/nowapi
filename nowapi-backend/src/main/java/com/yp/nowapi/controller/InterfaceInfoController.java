@@ -145,7 +145,7 @@ public class InterfaceInfoController {
      * @return
      */
     @AuthCheck(mustRole = "admin")
-    @GetMapping("/list")
+    @PostMapping("/list")
     public BaseResponse<List<InterfaceInfo>> listInterfaceInfo(@RequestBody InterfaceInfoQueryRequest interfaceInfoQueryRequest) {
         InterfaceInfo interfaceInfoQuery = new InterfaceInfo();
         if (interfaceInfoQueryRequest != null) {
@@ -163,7 +163,7 @@ public class InterfaceInfoController {
      * @param request
      * @return
      */
-    @GetMapping("/list/page")
+    @PostMapping("/list/page")
     public BaseResponse<Page<InterfaceInfo>> listInterfaceInfoByPage(@RequestBody InterfaceInfoQueryRequest interfaceInfoQueryRequest, HttpServletRequest request) {
         if (interfaceInfoQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);

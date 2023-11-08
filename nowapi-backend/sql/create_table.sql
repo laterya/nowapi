@@ -38,6 +38,61 @@ create table if not exists user_key
     unique index idx_userId (userId)
 ) comment '用户密钥' collate = utf8mb4_unicode_ci;
 
+-- 接口信息
+create table if not exists interface_info
+(
+    id             bigint auto_increment comment 'id' primary key,
+    name           varchar(256)                           not null comment '接口名称',
+    url            varchar(256)                           not null comment '接口地址',
+    userId         bigint                                 null comment '发布人',
+    method         varchar(256)                           not null comment '请求方法',
+    requestParams  text                                   null comment '接口请求参数',
+    responseParams text                                   null comment '接口响应参数',
+    reduceScore    bigint       default 0                 null comment '扣除积分数',
+    requestExample text                                   null comment '请求示例',
+    requestHeader  text                                   null comment '请求头',
+    responseHeader text                                   null comment '响应头',
+    returnFormat   varchar(512) default 'JSON'            null comment '返回格式(JSON等等)',
+    description    varchar(256)                           null comment '描述信息',
+    status         tinyint      default 0                 not null comment '接口状态（0- 默认下线 1- 上线）',
+    totalInvokes   bigint       default 0                 not null comment '接口总调用次数',
+    avatarUrl      varchar(1024)                          null comment '接口头像',
+    createTime     datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime     datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete       tinyint      default 0                 not null comment '是否删除'
+)
+    comment '接口信息';
+
+-- 用户调用接口关系表
+create table if not exists user_interface_invoke
+(
+    id           bigint auto_increment comment 'id' primary key,
+    userId       bigint                             not null comment '调用人id',
+    interfaceId  bigint                             not null comment '接口id',
+    totalInvokes bigint   default 0                 not null comment '总调用次数',
+    status       tinyint  default 0                 not null comment '调用状态（0- 正常 1- 封号）',
+    createTime   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete     tinyint  default 0                 not null comment '是否删除'
+)
+    comment '用户接口调用表';
+
+-- 商品信息表
+create table if not exists product_info
+(
+    id          bigint auto_increment comment 'id' primary key,
+    name        varchar(256)                       not null comment '产品名称',
+    description varchar(256)                       null comment '产品描述',
+    userId      bigint                             null comment '创建人',
+    price       bigint                             null comment '金额(分)',
+    addPoints   bigint   default 0                 not null comment '增加积分个数',
+    status      tinyint  default 0                 not null comment '商品状态（0- 默认下线 1- 上线）',
+    createTime  datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime  datetime default CURRENT_TIMESTAMP not null comment '更新时间',
+    isDelete    tinyint  default 0                 not null comment '是否删除'
+)
+    comment '商品信息';
+
 -- 帖子表
 create table if not exists post
 (
@@ -77,42 +132,3 @@ create table if not exists post_favour
     index idx_postId (postId),
     index idx_userId (userId)
 ) comment '帖子收藏';
-
--- 接口信息
-create table if not exists interface_info
-(
-    id             bigint auto_increment comment 'id' primary key,
-    name           varchar(256)                           not null comment '接口名称',
-    url            varchar(256)                           not null comment '接口地址',
-    userId         bigint                                 null comment '发布人',
-    method         varchar(256)                           not null comment '请求方法',
-    requestParams  text                                   null comment '接口请求参数',
-    responseParams text                                   null comment '接口响应参数',
-    reduceScore    bigint       default 0                 null comment '扣除积分数',
-    requestExample text                                   null comment '请求示例',
-    requestHeader  text                                   null comment '请求头',
-    responseHeader text                                   null comment '响应头',
-    returnFormat   varchar(512) default 'JSON'            null comment '返回格式(JSON等等)',
-    description    varchar(256)                           null comment '描述信息',
-    status         tinyint      default 0                 not null comment '接口状态（0- 默认下线 1- 上线）',
-    totalInvokes   bigint       default 0                 not null comment '接口总调用次数',
-    avatarUrl      varchar(1024)                          null comment '接口头像',
-    createTime     datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime     datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    isDelete       tinyint      default 0                 not null comment '是否删除'
-)
-    comment '接口信息';
-
--- 用户调用接口关系表
-create table if not exists user_interface_invoke
-(
-    id           bigint auto_increment comment 'id' primary key,
-    userId       bigint                             not null comment '调用人id',
-    interfaceId  bigint                             not null comment '接口id',
-    totalInvokes bigint   default 0                 not null comment '总调用次数',
-    status       tinyint  default 0                 not null comment '调用状态（0- 正常 1- 封号）',
-    createTime   datetime default CURRENT_TIMESTAMP not null comment '创建时间',
-    updateTime   datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
-    isDelete     tinyint  default 0                 not null comment '是否删除'
-)
-    comment '用户接口调用表';
