@@ -93,6 +93,41 @@ create table if not exists product_info
 )
     comment '商品信息';
 
+-- 商品订单
+create table if not exists product_order
+(
+    id             bigint auto_increment comment '订单号' primary key,
+    userId         bigint                                 not null comment '创建人',
+    productId      bigint                                 not null comment '商品id',
+    orderName      varchar(256)                           not null comment '商品名称',
+    total          bigint                                 not null comment '金额(分)',
+    codeUrl        varchar(256)                           null comment '二维码地址',
+    status         varchar(256) default 'NOTPAY'          not null comment '交易状态(SUCCESS：支付成功 REFUND：转入退款 NOTPAY：未支付 CLOSED：已关闭 REVOKED：已撤销（仅付款码支付会返回）
+                                                                              USERPAYING：用户支付中（仅付款码支付会返回）PAYERROR：支付失败（仅付款码支付会返回）)',
+    formData       text                                   null comment '支付宝formData',
+    expirationTime datetime                               null comment '过期时间',
+    createTime     datetime     default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime     datetime     default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '商品订单';
+
+#付款信息
+create table if not exists payment_info
+(
+    id          bigint auto_increment comment 'id' primary key,
+    orderNo     varchar(256)                       null comment '商户订单号',
+    tradeState  varchar(256)                       null comment '交易状态(SUCCESS：支付成功 REFUND：转入退款 NOTPAY：未支付 CLOSED：已关闭 REVOKED：已撤销（仅付款码支付会返回）
+                                                                              USERPAYING：用户支付中（仅付款码支付会返回）PAYERROR：支付失败（仅付款码支付会返回）)',
+    successTime varchar(256)                       null comment '支付完成时间',
+    userId      varchar(256)                       null comment '用户标识',
+    payerTotal  bigint                             null comment '用户支付金额',
+    content     text                               null comment '接口返回内容',
+    total       bigint                             null comment '总金额(分)',
+    createTime  datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime  datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间'
+)
+    comment '付款信息';
+
 -- 帖子表
 create table if not exists post
 (
