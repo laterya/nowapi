@@ -1,7 +1,6 @@
 package com.yp.nowapi.service.impl;
 
-import static com.yp.nowapi.constant.UserConstant.USER_LOGIN_STATE;
-
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -16,10 +15,6 @@ import com.yp.nowapi.model.vo.LoginUserVO;
 import com.yp.nowapi.model.vo.UserVO;
 import com.yp.nowapi.service.UserService;
 import com.yp.nowapi.utils.SqlUtils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -27,9 +22,15 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.yp.nowapi.constant.UserConstant.USER_LOGIN_STATE;
+
 /**
  * 用户服务实现
- *
  */
 @Service
 @Slf4j
@@ -266,5 +267,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;
+    }
+
+    @Override
+    public boolean checkUserExist(String userAccount) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUserAccount, userAccount);
+        return this.baseMapper.selectCount(queryWrapper) > 0;
     }
 }

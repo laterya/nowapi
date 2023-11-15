@@ -100,3 +100,11 @@ dubbo:
   registry:
     id: nacos-register
     address: nacos://localhost:8848
+gitee:
+  clientId: acb859c0b4a03d61cf160cacfb2811893eb5efa8488a0ab7d99fc74940e647a7
+  secretId: dd0ad62fb42c9d4b1285d8814ff3ad562729b4e158916cb023a48bb0e60dcfb6
+  redirectUrl: http://localhost:8101/api/user/gitee
+  state: GITEE
+  userPrefix: ${gitee.state}@
+  tokenUrl: https://gitee.com/oauth/token?grant_type=authorization_code&client_id=${gitee.clientId}&redirect_uri=${gitee.redirectUrl}&client_secret=${gitee.secretId}&code=
+  userInfoUrl: https://gitee.com/api/v5/user?access_token=

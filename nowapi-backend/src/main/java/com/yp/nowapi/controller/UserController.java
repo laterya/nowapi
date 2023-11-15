@@ -1,6 +1,7 @@
 package com.yp.nowapi.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.yp.nowapi.adapter.Login3rdAdapter;
 import com.yp.nowapi.annotation.AuthCheck;
 import com.yp.nowapi.common.BaseResponse;
 import com.yp.nowapi.common.DeleteRequest;
@@ -10,36 +11,26 @@ import com.yp.nowapi.config.WxOpenConfig;
 import com.yp.nowapi.constant.UserConstant;
 import com.yp.nowapi.exception.BusinessException;
 import com.yp.nowapi.exception.ThrowUtils;
-import com.yp.nowapi.model.dto.user.UserAddRequest;
-import com.yp.nowapi.model.dto.user.UserLoginRequest;
-import com.yp.nowapi.model.dto.user.UserQueryRequest;
-import com.yp.nowapi.model.dto.user.UserRegisterRequest;
-import com.yp.nowapi.model.dto.user.UserUpdateMyRequest;
-import com.yp.nowapi.model.dto.user.UserUpdateRequest;
+import com.yp.nowapi.model.dto.user.*;
 import com.yp.nowapi.model.entity.User;
 import com.yp.nowapi.model.vo.LoginUserVO;
 import com.yp.nowapi.model.vo.UserVO;
 import com.yp.nowapi.service.UserService;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
 import me.chanjar.weixin.common.bean.oauth2.WxOAuth2AccessToken;
 import me.chanjar.weixin.mp.api.WxMpService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 用户接口
- *
  */
 @RestController
 @RequestMapping("/user")
@@ -52,7 +43,17 @@ public class UserController {
     @Resource
     private WxOpenConfig wxOpenConfig;
 
+    @Resource
+    private Login3rdAdapter login3rdAdapter;
+
     // region 登录相关
+
+    // Gitee的回调接口
+    @GetMapping("/gitee")
+    public BaseResponse<LoginUserVO> gitee(String code, String state) {
+        LoginUserVO loginUserVO = login3rdAdapter.loginByGitee(code, state);
+        return ResultUtils.success(loginUserVO);
+    }
 
     /**
      * 用户注册
@@ -101,7 +102,7 @@ public class UserController {
      */
     @GetMapping("/login/wx_open")
     public BaseResponse<LoginUserVO> userLoginByWxOpen(HttpServletRequest request, HttpServletResponse response,
-            @RequestParam("code") String code) {
+                                                       @RequestParam("code") String code) {
         WxOAuth2AccessToken accessToken;
         try {
             WxMpService wxService = wxOpenConfig.getWxMpService();
@@ -197,7 +198,7 @@ public class UserController {
     @PostMapping("/update")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Boolean> updateUser(@RequestBody UserUpdateRequest userUpdateRequest,
-            HttpServletRequest request) {
+                                            HttpServletRequest request) {
         if (userUpdateRequest == null || userUpdateRequest.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -250,7 +251,7 @@ public class UserController {
     @PostMapping("/list/page")
     @AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
     public BaseResponse<Page<User>> listUserByPage(@RequestBody UserQueryRequest userQueryRequest,
-            HttpServletRequest request) {
+                                                   HttpServletRequest request) {
         long current = userQueryRequest.getCurrent();
         long size = userQueryRequest.getPageSize();
         Page<User> userPage = userService.page(new Page<>(current, size),
@@ -267,7 +268,7 @@ public class UserController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<UserVO>> listUserVOByPage(@RequestBody UserQueryRequest userQueryRequest,
-            HttpServletRequest request) {
+                                                       HttpServletRequest request) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -294,7 +295,7 @@ public class UserController {
      */
     @PostMapping("/update/my")
     public BaseResponse<Boolean> updateMyUser(@RequestBody UserUpdateMyRequest userUpdateMyRequest,
-            HttpServletRequest request) {
+                                              HttpServletRequest request) {
         if (userUpdateMyRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
