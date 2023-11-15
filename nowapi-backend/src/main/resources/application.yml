@@ -55,42 +55,6 @@ mybatis-plus:
       logic-delete-field: isDelete # 全局逻辑删除的实体字段名
       logic-delete-value: 1 # 逻辑已删除值（默认为 1）
       logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
-# 微信相关
-wx:
-  # 微信公众平台
-  mp:
-    token: xxx
-    aesKey: xxx
-    appId: xxx
-    secret: xxx
-    config-storage:
-      http-client-type: HttpClient
-      key-prefix: wx
-      redis:
-        host: 127.0.0.1
-        port: 6379
-      type: Memory
-  # 微信开放平台
-  open:
-    appId: xxx
-    appSecret: xxx
-# 对象存储
-cos:
-  client:
-    accessKey: xxx
-    secretKey: xxx
-    region: xxx
-    bucket: xxx
-nowapi:
-  client:
-    access-key: xxx
-    secret-key: xxx
-  alipay:
-    appId: 9021000131660368
-    private-key: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCaUeb0ex7JB+1dqJ7gGB4CH8RWz76IEFWbrq8aoB79cw/ltlpTvRajmQ0YXrg57ARRElvsJc9Evw/CIz1ccyN65GI1fEMZ5tKrPjiGUpm2iXfxnRgwPUlST0X+96YcoqvNPuXGjWWZAX+MVak7mBrSDtFnG+HTVeMYrZkPtxjcZ/qXAUAflzcNT6XH6/5uly4JfYLJGP3MBdjSVek2FV9haOt+XEUGeX4szNe8rF/6VxTzTSqSvKLtHTGy1U+4T3D+anBC+zuIhCKCGJ3vMR2TYfbHjFY9tDb7eQIMS6b3dS9drENoCe3GaEIsqPXcmULZgjsUKditkpZPXe5/qkN5AgMBAAECggEAL5pEG/Y+sNR5LALvv0CxQQZ7kivTIjWnsrZX3Wa3KIdtx/ZQNrSFX0G/AF13hqZ/TmLTaCzhmts1CTXFn9cEgswgX09Ng5foNFqlJQol0GDnVuiWpYrCK1m4xcWuv/aN+GoGhxDm3iPQLIHgCjoJS/K2NZAsQPylaN9j760TRilv2ABZ9afRs/vdXVSUqbCQdejc4XqK+JuEHyjP6NJMylMLDBdUxICx7zvgATdozKvkN988svlH4C1U53oLQM7ov3GICO25RavLju1A8pKBi4fiRG33ac8xlIxbuMVFFOJfPCUJFy5DsfjWOhZJvj1fAHb+oD30wvMwMAvTMr6rgQKBgQDyrLqKSxLwV5W5wazmQiAM/+20vi2lcxDSKvX0yklg7EhCDkVNJnHmmish0ohg9ChIBk55JzADq2uOE2W1me8VxkXs117bbZ+gJk3kh+NvVZD2aBNnQZI8B3Uhwyls+9ZBgIVIJ248hDp/vAzH8ig/gMhc8bqrk9h3bZfwJIK7FQKBgQCiyyw+nkungpj7AKZmtSmAYrG0/Y3ifSR6g40mJD81gmaYoc0BC5+SGmjJTQXIEI7TxFPVWw/g4maB07kdk90lPn78cyLHzJ7LkXlGoEuARgEMX6wLWndWlm9Bxz86KIGZfq5cc+CLRAvRzSWAbDm8J+wGkLLI/7EqfbvSaEzv1QKBgG0eqD6ZJWn3KDc/1FwxbbIKvrtgLKxRwkWO1cv9zeMMPC2ftx/K4rqbpjtuLK7T+uzwEQc/TMLJqPJY3Io9Lpmu7zBhY6DteTKNJsdVJzqf0jBKejca8AOYIt5MoGsGDsCjZsscF+CUYK2hRGoABIMRiIbql1Khh1ukZwavlC1FAoGAY5sSuEGcoqKavcF5DxC7ku1QNCCLxs+xGTESlQrKjg/6fFtLlt8oxHlaMgjph67x5QqUDNBJ19xOwhLsifdl8RrbEdXUqxE8++tHm/oKGDM9AvgqyUuSBy3GZyXlPs139pX3U2QnOK7q2HTABGKztLdsh9vTOH6SRSBnYmck4/0CgYEAyZmURhzH8lZVW1xNE2/pm8lgD6mfFtzbOBoHExgLH/frTAiAK2kosysNwQKXnIkdUHfJ9zWxU70d+QVrb0d922cCfE0FiIcEckbOIsW1TkKPDFhb8NEeUrp7M8WUuTolq3l7YEQS0hq3+bK+I+mU9OtZggDKCo0sC4j3leF1kfA=
-    public-key: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjBJElzi9amjyNXdnJP9dLZ+Huo2hsquGKqmR3MmiTJ08TmgpEW1Ta9lsJ7PfTJpObmpdOBjimmNsm4jrRXu5DyQOWa3wtYxyuBTw9qx52tHVN9oApzSCu6rvJ8EFPGV15ZuJx8OtG8+IyTRr93YBaXA3QCL4jrZKWzv3vF4pxGMTcKSb95yel6cfXjWHh/PkFNjB/5G9RXdFXbLjqK/OOuPy2HzrR3uOSo4CVnhtAvRKpP21BFN7+jKYRLjm1rZPJDU+/pPfUbyKBaqAaPx0kzNKhNkU7acyEvJ2FmgDB8+/9PmNR08z9Cq7Z6xPiDmCY9AgD82jmzm8WEM4AoxOAwIDAQAB
-    server-url: https://openapi-sandbox.dl.alipaydev.com/gateway.do
-    domian: http://e9e4pc.natappfree.cc
 dubbo:
   application:
     name: nowapi-backend-provider
@@ -100,11 +64,3 @@ dubbo:
   registry:
     id: nacos-register
     address: nacos://localhost:8848
-gitee:
-  clientId: acb859c0b4a03d61cf160cacfb2811893eb5efa8488a0ab7d99fc74940e647a7
-  secretId: dd0ad62fb42c9d4b1285d8814ff3ad562729b4e158916cb023a48bb0e60dcfb6
-  redirectUrl: http://localhost:8101/api/user/gitee
-  state: GITEE
-  userPrefix: ${gitee.state}@
-  tokenUrl: https://gitee.com/oauth/token?grant_type=authorization_code&client_id=${gitee.clientId}&redirect_uri=${gitee.redirectUrl}&client_secret=${gitee.secretId}&code=
-  userInfoUrl: https://gitee.com/api/v5/user?access_token=

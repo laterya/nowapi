@@ -2,6 +2,7 @@ package com.yp.nowapi.payment;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
  * @date: 2023/11/9
  */
 @Data
+@PropertySource("classpath:/dev/settings.properties")
 @ConfigurationProperties(prefix = "nowapi.alipay")
 @Component
 public class AliPayBean {

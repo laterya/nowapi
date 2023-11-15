@@ -9,13 +9,14 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * 腾讯云对象存储客户端
- *
  */
 @Configuration
 @ConfigurationProperties(prefix = "cos.client")
+@PropertySource("classpath:/dev/settings.properties")
 @Data
 public class CosClientConfig {
 

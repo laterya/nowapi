@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.yp.nowapi.model.vo.LoginUserVO;
 import com.yp.nowapi.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -19,16 +20,17 @@ import javax.servlet.http.HttpServletRequest;
  * @date: 2023/11/15
  */
 @Component
+@PropertySource("classpath:/dev/settings.properties")
 public class Login3rdAdapter implements Login3rdTarget {
 
     @Resource
     private UserService userService;
 
     @Value("${gitee.tokenUrl}")
-    private String accessTokenUri;
+    private String tokenUrl;
 
     @Value("${gitee.userInfoUrl}")
-    private String userInfoUri;
+    private String userInfoUrl;
 
     @Value("${gitee.userPrefix}")
     private String userPrefix;
@@ -44,14 +46,14 @@ public class Login3rdAdapter implements Login3rdTarget {
         }
         // 通过code获取accessToken,code从回调接口中获取
         String token = null;
-        try (HttpResponse response = HttpUtil.createPost(accessTokenUri + code).execute()) {
+        try (HttpResponse response = HttpUtil.createPost(tokenUrl + code).execute()) {
             String body = response.body();
             token = JSONUtil.parseObj(body).getStr("access_token");
         }
         // 通过accessToken获取用户信息
         String userName = null;
         String userAccount = null;
-        try (HttpResponse execute = HttpUtil.createGet(userInfoUri + token).execute()) {
+        try (HttpResponse execute = HttpUtil.createGet(userInfoUrl + token).execute()) {
             String body = execute.body();
             JSONObject entries = JSONUtil.parseObj(body);
             userAccount = entries.getStr("id");
