@@ -47,6 +47,12 @@ public class UserController {
         return ResultUtils.success(loginUserVO);
     }
 
+    @GetMapping("/other")
+    public BaseResponse<LoginUserVO> other(HttpServletRequest request) {
+        LoginUserVO loginUserVO = userService.login3rd("GITEE", request);
+        return ResultUtils.success(loginUserVO);
+    }
+
     /**
      * 用户注册
      *

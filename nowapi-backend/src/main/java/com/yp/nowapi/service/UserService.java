@@ -6,13 +6,13 @@ import com.yp.nowapi.model.dto.user.UserQueryRequest;
 import com.yp.nowapi.model.entity.User;
 import com.yp.nowapi.model.vo.LoginUserVO;
 import com.yp.nowapi.model.vo.UserVO;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
 import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 用户服务
- *
  */
 public interface UserService extends IService<User> {
 
@@ -35,6 +35,8 @@ public interface UserService extends IService<User> {
      * @return 脱敏后的用户信息
      */
     LoginUserVO userLogin(String userAccount, String userPassword, HttpServletRequest request);
+
+    LoginUserVO login3rd(String type, HttpServletRequest request);
 
 
     /**
