@@ -24,11 +24,5 @@
 hs_err_pid*
 replay_pid*
 
-### Example user template template
-### Example user template
 
-# IntelliJ project files
-.idea
-*.iml
-out
-gen
+/src/main/resources/dev/settings.properties
