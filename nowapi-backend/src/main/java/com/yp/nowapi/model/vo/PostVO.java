@@ -23,6 +23,8 @@ public class PostVO implements Serializable {
      */
     private Long id;
 
+    private String cover;
+
     /**
      * 标题
      */

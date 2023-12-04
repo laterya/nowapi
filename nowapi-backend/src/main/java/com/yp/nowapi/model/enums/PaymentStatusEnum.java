@@ -1,4 +1,4 @@
-package com.yp.nowapi.model.entity;
+package com.yp.nowapi.model.enums;
 
 import java.util.Arrays;
 import java.util.List;
@@ -56,13 +56,6 @@ public enum PaymentStatusEnum {
         this.value = value;
     }
 
-    /**
-     * 获取值
-     * 得到值
-     * 获取值列表
-     *
-     * @return {@link List}<{@link String}>
-     */
     public static List<String> getValues() {
         return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
     }

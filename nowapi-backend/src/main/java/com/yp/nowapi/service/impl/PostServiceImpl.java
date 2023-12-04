@@ -22,14 +22,6 @@ import com.yp.nowapi.model.vo.UserVO;
 import com.yp.nowapi.service.PostService;
 import com.yp.nowapi.service.UserService;
 import com.yp.nowapi.utils.SqlUtils;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -47,9 +39,13 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * 帖子服务实现
- *
  */
 @Service
 @Slf4j
@@ -226,6 +222,12 @@ public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements Po
         }
         page.setRecords(resourceList);
         return page;
+    }
+
+    @Override
+    public Page<Post> searchDefault(PostQueryRequest postQueryRequest) {
+        return this.baseMapper.selectPage(new Page<>(postQueryRequest.getCurrent(), postQueryRequest.getPageSize()),
+                this.getQueryWrapper(postQueryRequest));
     }
 
     @Override

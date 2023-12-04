@@ -19,20 +19,16 @@ import com.yp.nowapi.model.entity.User;
 import com.yp.nowapi.model.vo.PostVO;
 import com.yp.nowapi.service.PostService;
 import com.yp.nowapi.service.UserService;
-import java.util.List;
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 帖子接口
- *
  */
 @RestController
 @RequestMapping("/post")
@@ -158,7 +154,7 @@ public class PostController {
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<PostVO>> listPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+                                                       HttpServletRequest request) {
         long current = postQueryRequest.getCurrent();
         long size = postQueryRequest.getPageSize();
         // 限制爬虫
@@ -177,7 +173,7 @@ public class PostController {
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<PostVO>> listMyPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+                                                         HttpServletRequest request) {
         if (postQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -203,11 +199,12 @@ public class PostController {
      */
     @PostMapping("/search/page/vo")
     public BaseResponse<Page<PostVO>> searchPostVOByPage(@RequestBody PostQueryRequest postQueryRequest,
-            HttpServletRequest request) {
+                                                         HttpServletRequest request) {
         long size = postQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        Page<Post> postPage = postService.searchFromEs(postQueryRequest);
+//        Page<Post> postPage = postService.searchFromEs(postQueryRequest);
+        Page<Post> postPage = postService.searchDefault(postQueryRequest);
         return ResultUtils.success(postService.getPostVOPage(postPage, request));
     }
 

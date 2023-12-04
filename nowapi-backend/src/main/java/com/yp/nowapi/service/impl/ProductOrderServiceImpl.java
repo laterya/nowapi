@@ -10,15 +10,22 @@ import com.yp.nowapi.exception.BusinessException;
 import com.yp.nowapi.manager.CosManager;
 import com.yp.nowapi.mapper.ProductInfoMapper;
 import com.yp.nowapi.mapper.ProductOrderMapper;
-import com.yp.nowapi.model.entity.PaymentStatusEnum;
 import com.yp.nowapi.model.entity.ProductInfo;
 import com.yp.nowapi.model.entity.ProductOrder;
 import com.yp.nowapi.model.entity.User;
 import com.yp.nowapi.payment.AliPayBean;
 import com.yp.nowapi.service.ProductOrderService;
+import com.yp.nowapi.state.OrderState;
+import com.yp.nowapi.state.OrderStateChangeAction;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.statemachine.StateMachine;
+import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ProductOrderServiceImpl extends ServiceImpl<ProductOrderMapper, ProductOrder>
@@ -36,6 +43,16 @@ public class ProductOrderServiceImpl extends ServiceImpl<ProductOrderMapper, Pro
     @Resource
     private CosManager cosManager;
 
+    @Resource
+    private StateMachine<OrderState, OrderStateChangeAction> ordersStateMachine;
+
+    @Resource
+    private StateMachinePersister<OrderState, OrderStateChangeAction, String> stateMachineRedisPersister;
+
+    @Resource
+    private RedisTemplate redisTemplate;
+
+
     @Override
     public ProductOrder createOrder(Long productId, User loginUser) {
         ProductInfo productInfo = productInfoMapper.selectById(productId);
@@ -49,7 +66,7 @@ public class ProductOrderServiceImpl extends ServiceImpl<ProductOrderMapper, Pro
         LambdaQueryWrapper<ProductOrder> lqw = new LambdaQueryWrapper<>();
         lqw.eq(ProductOrder::getProductId, productId);
         lqw.eq(ProductOrder::getUserId, loginUser.getId());
-        lqw.eq(ProductOrder::getStatus, PaymentStatusEnum.NOTPAY.getValue());
+        lqw.eq(ProductOrder::getStatus, OrderState.ORDER_WAIT_PAY);
 
         ProductOrder productOrder = productOrderMapper.selectOne(lqw);
         if (productOrder != null) {
@@ -78,11 +95,49 @@ public class ProductOrderServiceImpl extends ServiceImpl<ProductOrderMapper, Pro
         order.setProductId(productId);
         order.setOrderName(name);
         order.setTotal(price);
-        order.setStatus(PaymentStatusEnum.NOTPAY.getValue());
+        order.setStatus(OrderState.ORDER_WAIT_PAY);
         // 4. 保存订单
         productOrderMapper.insert(order);
 
+        // todo 将订单放入Redis缓存
+        redisTemplate.opsForValue().set("product_order." + order.getId(), order, 15, TimeUnit.MINUTES);
         return order;
+    }
+
+    @Override
+    public ProductOrder pay(Long id) {
+        // 1. 从Redis缓存中取数据
+        ProductOrder productOrder = (ProductOrder) redisTemplate.opsForValue().get(id);
+        if (productOrder == null) {
+            productOrder = productOrderMapper.selectById(id);
+        }
+
+        // 2. 包装状态变更Message，并附带订单操作PAY_ORDER
+        Message<OrderStateChangeAction> message = MessageBuilder.withPayload(OrderStateChangeAction.PAY_ORDER).setHeader("productOrder", productOrder).build();
+        if (changeStateAction(message, productOrder)) {
+            return productOrder;
+        }
+        return null;
+    }
+
+
+    private boolean changeStateAction(Message<OrderStateChangeAction> message, ProductOrder productOrder) {
+        try {
+            //启动状态机
+            ordersStateMachine.start();
+            //从Redis缓存中读取状态机，缓存的Key为orderId+"STATE"，这是自定义的
+            stateMachineRedisPersister.restore(ordersStateMachine, productOrder.getId() + "STATE");
+            //将Message发送给OrderStateListener
+            boolean res = ordersStateMachine.sendEvent(message);
+            //将更改完订单状态的 状态机 存储到 Redis缓存
+            stateMachineRedisPersister.persist(ordersStateMachine, productOrder.getId() + "STATE");
+            return res;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            ordersStateMachine.stop();
+        }
+        return false;
     }
 }
 

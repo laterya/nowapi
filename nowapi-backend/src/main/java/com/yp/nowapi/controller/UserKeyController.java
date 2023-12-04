@@ -6,6 +6,7 @@ import cn.hutool.crypto.digest.Digester;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.yp.nowapi.common.BaseResponse;
 import com.yp.nowapi.common.ErrorCode;
+import com.yp.nowapi.common.IdRequest;
 import com.yp.nowapi.common.ResultUtils;
 import com.yp.nowapi.exception.BusinessException;
 import com.yp.nowapi.model.entity.User;
@@ -84,4 +85,16 @@ public class UserKeyController {
         return ResultUtils.success(userKeyVO);
     }
 
+    @PostMapping("/addPoints")
+    public BaseResponse<Boolean> addUserPoints(@RequestBody IdRequest idRequest, HttpServletRequest request) {
+        User loginUser = userService.getLoginUser(request);
+        LambdaQueryWrapper<UserKey> lqw = new LambdaQueryWrapper<>();
+        lqw.eq(UserKey::getUserId, loginUser.getId());
+        UserKey userKey = userKeyService.getOne(lqw);
+        if (userKey == null) {
+            throw new BusinessException(ErrorCode.OPERATION_ERROR, "用户密钥不存在");
+        }
+        userKeyService.addPoints(userKey, idRequest.getId());
+        return ResultUtils.success(true);
+    }
 }

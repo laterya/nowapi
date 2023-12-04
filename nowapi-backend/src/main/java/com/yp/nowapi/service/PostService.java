@@ -6,11 +6,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.yp.nowapi.model.dto.post.PostQueryRequest;
 import com.yp.nowapi.model.entity.Post;
 import com.yp.nowapi.model.vo.PostVO;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
  * 帖子服务
- *
  */
 public interface PostService extends IService<Post> {
 
@@ -37,6 +37,8 @@ public interface PostService extends IService<Post> {
      * @return
      */
     Page<Post> searchFromEs(PostQueryRequest postQueryRequest);
+
+    Page<Post> searchDefault(PostQueryRequest postQueryRequest);
 
     /**
      * 获取帖子封装

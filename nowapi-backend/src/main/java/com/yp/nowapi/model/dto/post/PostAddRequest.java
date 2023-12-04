@@ -1,12 +1,12 @@
 package com.yp.nowapi.model.dto.post;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.List;
-import lombok.Data;
 
 /**
  * 创建请求
- *
  */
 @Data
 public class PostAddRequest implements Serializable {
@@ -15,6 +15,8 @@ public class PostAddRequest implements Serializable {
      * 标题
      */
     private String title;
+
+    private String cover;
 
     /**
      * 内容

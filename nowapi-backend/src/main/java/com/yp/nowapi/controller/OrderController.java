@@ -4,7 +4,9 @@ import com.yp.nowapi.common.BaseResponse;
 import com.yp.nowapi.common.ErrorCode;
 import com.yp.nowapi.common.ResultUtils;
 import com.yp.nowapi.exception.BusinessException;
+import com.yp.nowapi.exception.ThrowUtils;
 import com.yp.nowapi.model.dto.order.PayCreateRequest;
+import com.yp.nowapi.model.dto.order.PayOrderRequest;
 import com.yp.nowapi.model.entity.ProductOrder;
 import com.yp.nowapi.model.entity.User;
 import com.yp.nowapi.service.ProductOrderService;
@@ -44,5 +46,11 @@ public class OrderController {
             throw new BusinessException(ErrorCode.OPERATION_ERROR, "订单创建失败，请稍后再试");
         }
         return ResultUtils.success(productOrder);
+    }
+
+    @PostMapping("/pay")
+    public BaseResponse<ProductOrder> payForOrder(@RequestBody PayOrderRequest payOrderRequest, HttpServletRequest request) {
+        ThrowUtils.throwIf(payOrderRequest.getId() <= 0, ErrorCode.NOT_FOUND_ERROR);
+        return ResultUtils.success(productOrderService.pay(payOrderRequest.getId()));
     }
 }

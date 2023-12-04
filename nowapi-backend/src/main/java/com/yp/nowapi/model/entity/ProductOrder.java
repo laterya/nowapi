@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.yp.nowapi.state.OrderState;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -20,7 +21,7 @@ public class ProductOrder implements Serializable {
     /**
      * 订单号
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
@@ -49,10 +50,9 @@ public class ProductOrder implements Serializable {
     private String codeUrl;
 
     /**
-     * 交易状态(SUCCESS：支付成功 REFUND：转入退款 NOTPAY：未支付 CLOSED：已关闭 REVOKED：已撤销（仅付款码支付会返回）
-     * USERPAYING：用户支付中（仅付款码支付会返回）PAYERROR：支付失败（仅付款码支付会返回）)
+     * 订单状态
      */
-    private String status;
+    private OrderState status;
 
     /**
      * 支付宝formData
